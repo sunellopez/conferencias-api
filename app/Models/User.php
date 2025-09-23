@@ -23,7 +23,6 @@ class User extends Authenticatable implements OAuthenticatable
         'name',
         'email',
         'password',
-        'id_conferencia',
     ];
 
     /**
@@ -47,5 +46,10 @@ class User extends Authenticatable implements OAuthenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function conferencias()
+    {
+        return $this->belongsToMany(Conferencia::class);
     }
 }

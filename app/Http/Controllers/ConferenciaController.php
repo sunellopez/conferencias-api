@@ -37,9 +37,7 @@ class ConferenciaController extends Controller
         $request->validate([
             'id_conferencia' => 'required|exists:conferencias,id',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
-        ], [
-            'email.unique' => 'El correo ya está registrado.',
+            'email' => 'required|email|max:255',
         ]);
 
         $conferencia = Conferencia::find($request->id_conferencia);
@@ -47,14 +45,28 @@ class ConferenciaController extends Controller
             return response()->json(['success' => false, 'message' => 'Conferencia no encontrada'], 404);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'id_conferencia' => $conferencia->id,
-            'password' => bcrypt('123456') // Asigna una contraseña por defecto
-        ]);
+        // Buscar usuario por correo
+        $user = User::firstOrCreate(
+            ['email' => $request->email],
+            ['name' => $request->name, 'password' => bcrypt('123456')],
+        );
 
-        return response()->json(['success' => true, 'message' => 'Usuario registrado en la conferencia con éxito', 'data' => $user], 201);
+        // Revisar si ya está registrado en esta conferencia
+        if ($user->conferencias()->where('conferencia_id', $conferencia->id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya estás registrado en esta conferencia.'
+            ], 409);
+        }
+
+        // Registrar al usuario en la conferencia
+        $user->conferencias()->attach($conferencia->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario registrado en la conferencia con éxito',
+            'data' => $user
+        ], 201);
     }
 
     /**
@@ -91,14 +103,18 @@ class ConferenciaController extends Controller
 
     public function inscritos($id)
     {
-        $conferencia = Conferencia::with('inscritos')->find($id);
+        $conferencia = Conferencia::with('users')->find($id);
+
         if (!$conferencia) {
             return response()->json(['success' => false, 'message' => 'Conferencia no encontrada'], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $conferencia
+            'data' => [
+                'conferencia' => $conferencia->only(['id', 'nombre']), // opcional: solo info básica
+                'inscritos' => $conferencia->users // los usuarios registrados
+            ]
         ]);
     }
 }
