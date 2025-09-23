@@ -15,6 +15,7 @@ Route::prefix('conferencias')->group(function () {
     Route::get('/', [ConferenciaController::class, 'index']); // todas las conferencias
     Route::post('/registrar', [ConferenciaController::class, 'store']); // registrar usuario
     Route::get('/{id}/inscritos', [ConferenciaController::class, 'inscritos']); // inscritos a una conferencia
+    Route::get('/usuarios-con-conferencias', [ConferenciaController::class, 'usersWithConferencias']);
 });
 // Rutas protegidas (requieren token válido)
 Route::middleware('auth:api')->group(function () {

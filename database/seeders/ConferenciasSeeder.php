@@ -44,6 +44,18 @@ class ConferenciasSeeder extends Seeder
                 'ponente' => 'Dra. Sánchez',
                 'descripcion' => 'Técnicas avanzadas de ML y casos de estudio reales.',
             ],
+            [
+                'nombre' => 'Computación Cuántica',
+                'fecha' => '2026-01-10',
+                'ponente' => 'Dr. Ramírez',
+                'descripcion' => 'Principios básicos de la computación cuántica y sus retos actuales.',
+            ],
+            [
+                'nombre' => 'Realidad Aumentada y Virtual',
+                'fecha' => '2026-02-05',
+                'ponente' => 'Ing. Torres',
+                'descripcion' => 'Aplicaciones de AR/VR en educación, medicina y entretenimiento.',
+            ],
         ];
 
         foreach ($conferencias as $conf) {

@@ -117,4 +117,14 @@ class ConferenciaController extends Controller
             ]
         ]);
     }
+
+    public function usersWithConferencias()
+    {
+        $conferencias = Conferencia::with('users')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $conferencias
+        ]);
+    }
 }
