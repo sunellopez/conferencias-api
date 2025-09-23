@@ -39,7 +39,7 @@ class ConferenciaController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
         ], [
-            'email.unique' => 'El correo ya está registrado en otra cuenta.',
+            'email.unique' => 'El correo ya está registrado.',
         ]);
 
         $conferencia = Conferencia::find($request->id_conferencia);
